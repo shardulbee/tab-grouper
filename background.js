@@ -30,6 +30,14 @@ function updateTabGroup(tab) {
   });
 }
 
+chrome.tabGroups.onRemoved.addListener(async (group) => {
+  // move all existing groups to the beginning
+  let groups = await chrome.tabGroups.query({});
+  groups.forEach(group => {
+    return chrome.tabGroups.move(group.id, {index: 0}).catch(error => console.log(error.message))
+  })
+})
+
 function handleTabUpdate(urlMap, tabGroupMap, tab) {
   const domain = getDomainFromUrl(tab.url)
   if (!domain) return;
@@ -60,6 +68,9 @@ chrome.tabGroups.onCreated.addListener(async (group) => {
   let domain = getDomainFromUrl(tabs[0].url);
 
   chrome.tabGroups.update(group.id, {title: domain, collapsed: false}).catch(error => {
+    return console.log(error.message);
+  });
+  chrome.tabGroups.move(group.id, {index: 0}).catch(error => {
     return console.log(error.message);
   });
 
