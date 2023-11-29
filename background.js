@@ -1,3 +1,7 @@
+const GROUP_DENYLIST = [
+  'google'
+]
+
 chrome.runtime.onInstalled.addListener(initializeTabGroups);
 async function initializeTabGroups() {
   ungroupTabs();
@@ -28,6 +32,8 @@ function updateTabGroup(tab) {
 
 function handleTabUpdate(urlMap, tabGroupMap, tab) {
   const domain = getDomainFromUrl(tab.url)
+  if (!domain) return;
+  if (GROUP_DENYLIST.includes(domain)) return;
 
   if (urlMap[domain]) {
     urlMap[domain][tab.id] = true;
