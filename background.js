@@ -74,7 +74,7 @@ async function handleTabDelete(tabId, removeInfo) {
       delete urlMap[domain][tabId];
       if (Object.keys(urlMap[domain]).length < 3) {
         const tabIds = Object.keys(urlMap[domain]).map(Number);
-        chrome.tabs.ungroup(tabIds);
+        if (tabIds.length !== 0) chrome.tabs.ungroup(tabIds);
         delete tabGroupMap[domain];
       }
       break;
